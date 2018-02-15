@@ -25,7 +25,7 @@ matplotlib.rcParams.update({'mathtext.fontset': 'cm'})
 
 fdata = '/Users/cpatrizio/data/MERRA2/'
 fout = '/Volumes/GoogleDrive/My Drive/PhD/figures/MERRA2/'
-fkernels = '/Users/cpatrizio/repos/cam5-kernels/kernels/'
+fkernels = '/Volumes/GoogleDrive/My Drive/data/cam5-kernels/kernels/'
 
 #CAM5 KERNELS FOR MERRA2
 falbkern = cdms2.open(fkernels + 'alb.kernel.nc')

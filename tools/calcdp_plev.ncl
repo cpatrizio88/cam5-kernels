@@ -14,7 +14,7 @@ ps_file="kernels/PS.nc"
 pf    = addfile(ps_file, "r")
 
 
-;;plev_hPa=(/1000, 925, 850, 700, 600, 500, 400, 300, 250,  200, 150, 100, 70, 50, 30, 20, 10/)  ;; CMIP5 troposphere / stratosphere levels   
+;; plev_hPa=(/1000, 925, 850, 700, 600, 500, 400, 300, 250,  200, 150, 100, 70, 50, 30, 20, 10/)  ;; CMIP5 troposphere / stratosphere levels   
 plev_hPa=(/1000, 975, 950, 925, 900, 875, 850, 825, 800, 775, 750, 725, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100, 70, 60, 50, 30, 20, 10, 7, 5, 4, 3, 2, 1, 0.7, 0.5, 0.4, 0.3, 0.1/) ;; MERRA2 levels       
 plev:=plev_hPa*100 ; convert to Pa                                                                                                                          
 

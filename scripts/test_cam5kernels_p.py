@@ -12,12 +12,12 @@ import cdms2 as cdms2
 import glob
 import numpy as np
 import MV2 as MV2
-from AMO.misc_fns import spatial_ave
+from AMO.misc_fns import spatial_ave, calcsatspechum
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 
-fin = '/Users/cpatrizio/repos/cam5-kernels/kernels/'
-fdata = '/Users/cpatrizio/repos/cam5-kernels/demodata/'
+fin = '/Volumes/GoogleDrive/My Drive/data/cam5-kernels/kernels/'
+fdata = '/Volumes/GoogleDrive/My Drive/data/cam5-kernels/demodata/'
 fout = '/Volumes/GoogleDrive/My Drive/PhD/figures/CAM5kernels/'
 
 #model_names =['MRI-CGCM3']
@@ -32,6 +32,7 @@ fout = '/Volumes/GoogleDrive/My Drive/PhD/figures/CAM5kernels/'
 #    year2='19'
 
 fbasefields = glob.glob(fdata + 'basefields.nc')[0]
+fbasefields3D = glob.glob(fdata + 'basefields.plev.nc')[0]
 fchangefields3D = glob.glob(fdata + 'changefields.plev.nc')[0]
 fchangefields = glob.glob(fdata + 'changefields.nc')[0]
 
@@ -43,6 +44,7 @@ fchangefields = glob.glob(fdata + 'changefields.nc')[0]
 #calcdp_plev.ncl
 
 basefields = cdms2.open(fbasefields)
+basefields3D = cdms2.open(fbasefields3D)
 changefields3D = cdms2.open(fchangefields3D)
 changefields = cdms2.open(fchangefields)
 pdiff = cdms2.open(fdata + 'dp_CMIP5plev.nc')['dp'][:]/100.
@@ -162,8 +164,8 @@ print 'ATM surface albedo feedback (W m^-2 K^-1)', alb_feedback_TOA - alb_feedba
 
 
 #BETTER TO CALCULATE DQ1K WITH MY OWN SCRIPTS
-fdq1k = cdms2.open(glob.glob(fdata + 'dq1k.plev.nc')[0])
-dq1k = fdq1k('dq1k')
+#fdq1k = cdms2.open(glob.glob(fdata + 'dq1k.plev.nc')[0])
+#dq1k = fdq1k('dq1k')
 #
 #% Read kernels
 q_LW_kernel_TOA=fqkern('FLNT')
@@ -176,21 +178,30 @@ q_SW_kernel_TOA_cs=fqkern['FSNTC']
 q_LW_kernel_surf_cs=fqkern['FLNSC']
 q_SW_kernel_surf_cs=fqkern['FSNSC']
 
+#% Read the change in moisture
+dq=changefields3D['Q'][:]
+
+q1 = basefields3D('Q')
+t1 = basefields3D('temp')
+qs1 = calcsatspechum(t1,p)
+qs2 = calcsatspechum(t1+dta,p)
+dqsdt = (qs2 - qs1)/dta
+rh = q1/qs1
+dqdt = rh*dqsdt
+
 #
 #% Normalize kernels by the change in moisture for 1 K warming at
 # constant RH
-q_LW_kernel_TOA=q_LW_kernel_TOA/dq1k
-q_SW_kernel_TOA=q_SW_kernel_TOA/dq1k
-q_LW_kernel_surf=q_LW_kernel_surf/dq1k
-q_SW_kernel_surf=q_SW_kernel_surf/dq1k
+q_LW_kernel_TOA=q_LW_kernel_TOA/dqdt
+q_SW_kernel_TOA=q_SW_kernel_TOA/dqdt
+q_LW_kernel_surf=q_LW_kernel_surf/dqdt
+q_SW_kernel_surf=q_SW_kernel_surf/dqdt
 
-q_LW_kernel_TOA_cs=q_LW_kernel_TOA_cs/dq1k
-q_SW_kernel_TOA_cs=q_SW_kernel_TOA_cs/dq1k
-q_LW_kernel_surf_cs=q_LW_kernel_surf_cs/dq1k
-q_SW_kernel_surf_cs=q_SW_kernel_surf_cs/dq1k
+q_LW_kernel_TOA_cs=q_LW_kernel_TOA_cs/dqdt
+q_SW_kernel_TOA_cs=q_SW_kernel_TOA_cs/dqdt
+q_LW_kernel_surf_cs=q_LW_kernel_surf_cs/dqdt
+q_SW_kernel_surf_cs=q_SW_kernel_surf_cs/dqdt
 #
-#% Read the change in moisture
-dq=changefields3D['Q'][:]
 
 mask_temp = dq.mask
 #mask stratospheric values
