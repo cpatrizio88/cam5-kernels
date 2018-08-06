@@ -12,7 +12,7 @@ import cdms2 as cdms2
 import glob
 import numpy as np
 import MV2 as MV2
-from AMO.misc_fns import spatial_ave, calcsatspechum
+from atmosphere_ocean.misc_fns import spatial_ave, calcsatspechum
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 

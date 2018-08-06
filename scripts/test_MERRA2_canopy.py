@@ -8,8 +8,9 @@ from AMO.misc_fns import spatial_ave
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 
-fdata = '/Users/cpatrizio/data/MERRA2/'
-fkernels = '/Users/cpatrizio/repos/cam5-kernels/kernels/'
+fkernels = '/Volumes/GoogleDrive/My Drive/data/cam5-kernels/kernels/'
+fdata = '/Volumes/GoogleDrive/My Drive/data/cam5-kernels/MERRA2/
+fout = '/Volumes/GoogleDrive/My Drive/PhD/figures/CAM5kernels/'
 
 #CAM5 KERNELS FOR MERRA2
 falbkern = Dataset(fkernels + 'alb.kernel.nc')
@@ -47,10 +48,12 @@ fnametsps = glob.glob(fdata + 'MERRA2_tsps_monthly1970to2017.nc')[0]
 fnamerad = glob.glob(fdata + 'MERRA2_rad_monthly1970to2017.nc')[0]
 
 tfile = Dataset(fnamet)
-qvfile = Dataset(fnameqv)
-tspsfile = Dataset(fnametsps)
-radfile = Dataset(fnamerad)
+#qvfile = Dataset(fnameqv)
+#tspsfile = Dataset(fnametsps)
+#radfile = Dataset(fnamerad)
 
-t = tfile['T'][:]
-qv = qvfile['QV'][:]
-ts = tspsfile['TS'][:]
+tinit=12*1
+
+t = tfile['T'][-tinit:-1,:]
+#qv = qvfile['QV'][:]
+#ts = tspsfile['TS'][:]
